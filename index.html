@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+/>
+
+<title>Luckyyy Number</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background: #0f172a;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+.container{
+
+    max-width:1200px;
+
+    margin:auto;
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:25px;
+
+    color:#ffffff;
+
+    font-size:clamp(24px,4vw,40px);
+}
+
+/* GRID */
+.grid{
+	display:grid;
+	grid-template-columns:repeat(10,1fr);
+	gap:5px;
+	margin-top:10px;
+}
+/* 
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(60px,1fr));
+
+    gap:10px;
+}
+*/
+/* BUTTON */
+.number-btn{
+	aspect-ratio:1;
+	border:none;
+	border-radius:12px;
+	background:#22c55e;
+	color:white;
+	font-size:18px;
+	cursor:pointer;
+	transition:.2s;
+}
+
+/*
+.number-btn{
+
+    width:100%;
+
+    aspect-ratio:1/1;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#28a745;
+
+    color:white;
+
+    font-size:clamp(16px,2vw,22px);
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+*/
+.number-btn:hover{
+
+    transform:scale(1.05);
+}
+
+.booked{
+
+    background:#dc3545 !important;
+
+    cursor:not-allowed;
+}
+.selected{
+
+    background:#ffc107 !important;
+
+    color:#000;
+}
+
+/* MODAL */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.5);
+
+    z-index:999;
+
+    overflow-y:auto;
+
+    padding:20px;
+}
+
+.modal-content{
+
+    background:white;
+
+    width:100%;
+
+    max-width:400px;
+
+    border-radius:20px;
+
+    padding:25px;
+
+    margin:auto;
+
+    margin-top:30px;
+
+    margin-bottom:30px;
+
+    max-height:90vh;
+
+    overflow-y:auto;
+}
+
+.modal-content h2{
+
+    text-align:center;
+
+    margin-bottom:20px;
+}
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:bold;
+}
+
+input{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #ccc;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+    font-size:16px;
+}
+
+/* QR */
+
+.qr{
+
+    text-align:center;
+
+    margin-bottom:15px;
+}
+
+.qr img{
+
+    width:100%;
+
+    max-width:220px;
+
+    border-radius:12px;
+}
+
+/* PREVIEW */
+
+.preview{
+
+    width:100%;
+
+    max-height:250px;
+
+    object-fit:contain;
+
+    border-radius:12px;
+
+    margin-top:10px;
+
+    display:none;
+}
+
+/* BUTTON */
+
+.confirm-btn{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    background:#007bff;
+
+    color:white;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+    font-size:16px;
+}
+
+.close-btn{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    background:#999;
+
+    color:white;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+    font-size:16px;
+}
+
+/* MOBILE 
+
+@media(max-width:768px){
+
+    .grid{
+
+        grid-template-columns:
+        repeat(auto-fit,minmax(55px,1fr));
+
+        gap:8px;
+    }
+}
+
+@media(max-width:480px){
+
+    .grid{
+
+        grid-template-columns:
+        repeat(5,1fr);
+    }
+}
+*/
+
+.info {
+    margin-top: 10px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+	color: #fff;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Luckyyy Numbers</h1>
+	
+	<div
+    style="
+    text-align:center;
+    margin-bottom:20px;
+    font-size:18px;
+	color: #fff;
+    "
+>
+    10 บาท/เลข ถูกเลข 2 ตัวบน = 600 บาท
+</div>
+	
+<div style="text-align: center; margin-bottom: 20px;">
+    <img src="https://lh3.googleusercontent.com/d/1LLzckTpWXXsZoeQK0JAF3CyXnzX7N1D2" alt="Promotion Buy 5 Free 1" 
+	style="max-width: 100%; height: auto;">
+</div>
+
+    <div class="grid" id="grid"></div>
+	
+	<button
+    id="openBookingBtn"
+    style="
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    "
+>
+    จองเลขที่เลือก
+</button>
+
+
+<p
+    id="selectedDisplay"
+    style="
+    margin-top:15px;
+    font-size:18px;
+    text-align:center;
+	color: #fff;
+    "
+></p>
+
+<div class="info" id="selectedPrice">ยอดที่ต้องโอน: 0 บาท</div>
+
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" id="bookingModal">
+
+    <div class="modal-content">
+
+        <h2>
+            จองเลข
+            <span id="selectedNumber"></span>
+        </h2>
+
+        <label>ชื่อผู้จอง</label>
+
+        <input
+            type="text"
+            id="customerName"
+            placeholder="กรอกชื่อผู้จอง"
+        >
+
+        <div class="qr">
+
+            <p style="margin-bottom:10px;">
+                สแกน QR เพื่อชำระเงิน
+            </p>
+			
+			<p style="margin-bottom:8px;">
+				ชื่อบัญชี : ภุชงค์ นุชเจริญ
+            </p>
+
+            <!-- เปลี่ยนเป็น QR ของคุณ -->
+            <img src="qr.png">
+
+        </div>
+
+        <label>อัปโหลดสลิป</label>
+
+        <input
+            type="file"
+            id="slipUpload"
+            accept="image/*"
+        >
+
+        <img
+            id="previewImage"
+            class="preview"
+        >
+
+        <button
+            class="confirm-btn"
+            onclick="confirmBooking()"
+        >
+            ยืนยันการจอง
+        </button>
+
+        <button
+            class="close-btn"
+            onclick="closeModal()"
+        >
+            ยกเลิก
+        </button>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+/* FIREBASE */
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+		getFirestore,
+		doc,
+		setDoc,
+		getDoc,
+		getDocs,
+		collection
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDW5Vq1ss5WSYPSHKSToQBgiyAzHi12_B8",
+
+    authDomain:
+    "luckyyy-numbers.firebaseapp.com",
+
+    projectId:
+    "luckyyy-numbers",
+
+    appId:
+    "1:151005010834:web:2ca804d0b9b86bcd4aff4b"
+};
+
+/* INIT */
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+/* ELEMENTS */
+
+const grid =
+document.getElementById("grid");
+
+const modal =
+document.getElementById("bookingModal");
+
+const selectedNumberText =
+document.getElementById("selectedNumber");
+
+const selectedDisplay = document.getElementById("selectedDisplay");
+const selectedPrice = document.getElementById("selectedPrice");
+
+const previewImage =
+document.getElementById("previewImage");
+
+const slipUpload =
+document.getElementById("slipUpload");
+
+const confirmBtn =
+document.querySelector(".confirm-btn");
+
+const openBookingBtn =
+document.getElementById(
+    "openBookingBtn"
+);
+
+openBookingBtn.onclick = () => {
+
+    if(selectedNumbers.length === 0){
+
+        alert("กรุณาเลือกเลข");
+
+        return;
+    }
+
+    const numbersText =
+	selectedNumbers.join(", ");
+
+	selectedNumberText.innerText =
+	numbersText;
+
+	selectedDisplay.innerText =
+	"เลขที่เลือก: " + numbersText;
+	
+	/*selectedPrice.innerText = "ยอดที่ต้องโอน: " + calculatePrice(selectedNumbers.length);
+*/
+    modal.style.display = "block";
+};
+
+let selectedNumbers = [];
+
+/* CREATE GRID */
+
+for(let i=0;i<100;i++){
+
+    const num =
+    i.toString().padStart(2,'0');
+
+    const btn =
+    document.createElement("button");
+
+    btn.innerText = num;
+
+    btn.className = "number-btn";
+
+    btn.onclick = () => {
+
+    if(btn.classList.contains("booked")){
+        return;
+    }
+
+    if(btn.classList.contains("selected")){
+
+        btn.classList.remove("selected");
+
+        selectedNumbers =
+        selectedNumbers.filter(
+            n => n !== num
+        );
+
+    }else{
+
+        btn.classList.add("selected");
+
+        selectedNumbers.push(num);
+    }
+
+    const numbersText =
+    selectedNumbers.join(", ");
+
+    selectedNumberText.innerText =
+    numbersText;
+
+    selectedDisplay.innerText =
+    "เลขที่เลือก: " + numbersText;
+	
+	selectedPrice.innerText = "ยอดที่ต้องโอน: " + calculatePrice(selectedNumbers.length);
+};
+
+    grid.appendChild(btn);
+}
+
+function calculatePrice(count){
+  return (count - Math.floor(count / 6)) * 10;
+}
+
+/* LOAD BOOKINGS */
+
+async function loadBookings(){
+
+    try{
+
+        const querySnapshot =
+        await getDocs(
+            collection(db,"bookings")
+        );
+
+        querySnapshot.forEach((docData)=>{
+
+            const num = docData.id;
+
+            document
+            .querySelectorAll(".number-btn")
+            .forEach(btn=>{
+
+                if(btn.innerText === num){
+
+                    btn.classList.add(
+                        "booked"
+                    );
+
+                    btn.disabled = true;
+                }
+            });
+        });
+
+    }catch(error){
+
+        console.error(error);
+    }
+}
+
+loadBookings();
+
+/* PREVIEW IMAGE */
+
+slipUpload.addEventListener(
+"change",
+function(){
+
+    const file = this.files[0];
+
+    if(file){
+
+        const reader =
+        new FileReader();
+
+        reader.onload = function(e){
+
+            previewImage.src =
+            e.target.result;
+
+            previewImage.style.display =
+            "block";
+        };
+
+        reader.readAsDataURL(file);
+    }
+});
+
+/* CLOSE MODAL */
+
+window.closeModal = function(){
+
+    modal.style.display = "none";
+
+    document.getElementById(
+        "customerName"
+    ).value = "";
+
+    slipUpload.value = "";
+
+    previewImage.style.display =
+    "none";
+
+    /*selectedNumbers = [];
+	selectedDisplay.innerText =
+	"เลขที่เลือก: -";
+	*/
+    document
+    .querySelectorAll(".number-btn")
+    .forEach(btn=>{
+
+        if(
+            btn.classList.contains(
+                "selected"
+            )
+        ){
+			/*
+            btn.classList.remove(
+                "selected"
+            );
+			*/
+        }
+    });
+}
+
+/* CONFIRM BOOKING */
+
+window.confirmBooking =
+async function(){
+
+	if(confirmBtn.disabled){
+        return;
+    }
+
+    const customerName =
+    document.getElementById(
+        "customerName"
+    ).value.trim();
+
+    const slipFile =
+    slipUpload.files[0];
+
+    if(customerName === ""){
+
+        alert("กรุณากรอกชื่อ");
+
+        return;
+    }
+
+    if(!slipFile){
+
+        alert("กรุณาอัปโหลดสลิป");
+
+        return;
+    }
+
+    try{
+
+        confirmBtn.disabled = true;
+
+        confirmBtn.innerText =
+        "⏳ กำลังอัปโหลด...";
+
+        /* CLOUDINARY */
+
+        const formData =
+        new FormData();
+
+        formData.append(
+            "file",
+            slipFile
+        );
+
+        /* เปลี่ยน upload_preset */
+
+        formData.append(
+            "upload_preset",
+            "LuckyyyNumbers"
+        );
+
+        /* CHANGE CLOUD NAME */
+
+        const response =
+        await fetch(
+
+            "https://api.cloudinary.com/v1_1/dcalwwvej/image/upload",
+
+            {
+
+                method:"POST",
+
+                body:formData
+            }
+        );
+
+        const data =
+        await response.json();
+
+        if(!data.secure_url){
+
+            console.log(data);
+			
+			throw new Error(
+                JSON.stringify(data)
+            );
+        }
+
+        const slipURL =
+        data.secure_url;
+
+        /* SAVE FIRESTORE */
+
+        for(const number of selectedNumbers){
+		
+	const bookingRef =
+	doc(db,"bookings",number);
+
+	const bookingSnap =
+	await getDoc(bookingRef);
+
+	if(bookingSnap.exists()){
+
+    alert(
+        "เลข " +
+        number +
+        " ถูกจองไปแล้ว"
+    );
+
+    continue;
+}	
+
+    await setDoc(
+
+        bookingRef,
+
+        {
+
+            number:number,
+
+            customerName:
+            customerName,
+
+            slipURL:
+            slipURL,
+
+            createdAt:
+            new Date().toISOString()
+        }
+    );
+	/* UPDATE UI */
+
+    document
+    .querySelectorAll(".number-btn")
+    .forEach(btn=>{
+
+        if(btn.innerText === number){
+
+            btn.classList.remove(
+                "selected"
+            );
+
+            btn.classList.add(
+                "booked"
+            );
+
+            btn.disabled = true;
+        }
+    });
+}
+
+        const bookedNumbers =
+		selectedNumbers.join(", ");
+
+		alert(
+		"จองเลขสำเร็จ:\n" +
+		bookedNumbers
+);
+
+		closeModal();
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "เกิดข้อผิดพลาด\n\n" +
+            error.message
+        );
+
+    }finally{
+
+        confirmBtn.disabled = false;
+
+        confirmBtn.innerText =
+        "ยืนยันการจอง";
+    }
+}
+
+</script>
+
+</body>
+</html>
